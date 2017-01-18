@@ -7,7 +7,7 @@ import ipaddress
 def pinger(address):
 	try:
 		response = subprocess.check_output('/bin/ping -c 1 ' + address, shell=True)
-		print '***Address %s was found***' % address
+		print '***Address %s found***' % address
 	except Exception as e:
 		pass
 def main():
