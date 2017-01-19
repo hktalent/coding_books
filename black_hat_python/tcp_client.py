@@ -1,28 +1,57 @@
 import socket
+import sys
 
-target_host = 'localhost'
-target_port = 99
+#input: target host ip address or hostname (string), target port (string)
+#output:
+#description: creates socket and connects to host:port, continuous prompts for data to be sent, and displays response to this data
+def client_Sender(target_host, target_port):
+	try:
+		print '[*] Connecting to ' + target_host + ':' + str(target_port)
+		client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		client_socket.connect((target_host, target_port))
+		print '[*] Connection successful'
+	except:
+		print '[!] Error connecting'
 
-try:
-	print '[client]: Connecting to %s:%d' % (target_host, target_port)
-	client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	client.connect((target_host, target_port))
-	print '[client]: Connection Succesful.'
-except Exception as e:
-	print '[client]: Error connecting - ' + str(e)
+	while True:
+		print '[*] Enter data to send: '
+		data_buffer = raw_input('')
 
-data = 'Testing. Hello World!'
+		try:
+			print '[*] Sending data'
+			client_socket.send(data_buffer)
+		except:
+			print '[!] Error sending data'
+			sys.exit(0)
 
-print '[client]: Sending data: %s' % (data,)
+		response = ''
 
-try:
-	client.send(data)
-	print '[client]: Data sent.'
-except Exception as e:
-	print '[client]: Error sending data - ' + str(e)
+		try:
+			while True:
+				data = client_socket.recv(4096)
+				if not data:
+					break
+				response += data
 
-print '[client]: Response from %s' % (target_host,)
+			print '[*] Server Response:'
+			print response
+			print
+		except:
+			print '[!] Error receiving data from target'
+			sys.exit(0)
 
-response = client.recv(4096)
+#input:
+#output:
+#description: main functions, launches other functions based on command line input
+def main():
+	try:
+		target_host = sys.argv[1]
+		target_port = int(sys.argv[2])
+	except:
+		print 'Usage: tcp_client.py [targethost] [targetport]'
+		sys.exit(0)
 
-print response
+	client_sender(target_host, target_port)
+
+if __name__ == '__main__':
+	main()

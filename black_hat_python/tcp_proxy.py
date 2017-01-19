@@ -2,6 +2,9 @@ import sys
 import socket
 import threading
 
+#input: localhost (string), localport (string), remotehost (string), remoteport (string), whether or not to receive data before sending (bool)
+#output:
+#description: server loop that creates the local proxy server and waits for client to connect, sending each client socket to a new proxy handler thread
 def server_loop(local_host, local_port, remote_host, remote_port, receive_first):
 	server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -23,6 +26,9 @@ def server_loop(local_host, local_port, remote_host, remote_port, receive_first)
 		proxy_thread = threading.Thread(target=proxy_handler, args=(client_socket, remote_host, remote_port, receive_first))
 		proxy_thread.start()
 
+#input: hex data to convert and display (bytes), length of the data (int)
+#output:
+#description: converts bytes into readable ascii, print data
 def hexdump(src, length=16):
 	result = []
 	digits = 4 if isinstance(src, unicode) else 2
@@ -33,6 +39,9 @@ def hexdump(src, length=16):
 		result.append(b"%04X %-*s %s" % (i, length*(digits+1), hexa, text))
 	print b'\n'.join(result)
 
+#input: socket to receive data from (socket object)
+#output: data received (bytes)
+#description: recieves data from socket until no data is sent, returns data
 def receive_from(connection):
 	buffer = ''
 
@@ -48,12 +57,21 @@ def receive_from(connection):
 		pass
 	return buffer
 
+#input: data (string)
+#output: manipulated data (string)
+#description: used to manipulate data being sent out of proxy
 def request_handler(buffer):
 	return buffer
 
+#input: data (string)
+#output: manipulated data (string)
+#description: used to manipulate data being sent into the proxy
 def response_handler(buffer):
 	return buffer
 
+#input:
+#output:
+#description:
 def proxy_handler(client_socket, remote_host, remote_port, receive_first):
 	remote_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -102,7 +120,10 @@ def proxy_handler(client_socket, remote_host, remote_port, receive_first):
 			print '[*] No more data. Closing Connections.'
 			
 			break
-
+			
+#input:
+#output:
+#description:
 def main():
 	if len(sys.argv[1:]) != 5:
 		print 'Usage: ./tcp_proxy.py localhost localport remotehost remoteport receivefirst'
@@ -122,4 +143,5 @@ def main():
 
 	server_loop(local_host, local_port, remote_host, remote_port, receive_first)
 
-main()
+if __name__ == '__main__':
+	main()

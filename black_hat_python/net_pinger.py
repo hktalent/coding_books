@@ -4,12 +4,20 @@ import subprocess
 import netaddr
 import ipaddress
 
+#input: ip address (string)
+#output: 
+#description: executes ping command against an ip address, prints a message if the address is pingable
 def pinger(address):
 	try:
 		response = subprocess.check_output('/bin/ping -c 1 ' + address, shell=True)
-		print '***Address %s found***' % address
+		print '[*] Address %s found' % address
 	except Exception as e:
 		pass
+
+#input:
+#output:
+#description: main function, converts ip address and netmask into network object, creates threads to
+#execute pings for each address in the network range
 def main():
 	netmask = ''
 	ip_addr = ''
@@ -34,4 +42,5 @@ def main():
 		t = threading.Thread(target=pinger, args=(str(addr),))
 		t.start()
 
-main()
+if __name__ == '__main__':
+	main()
