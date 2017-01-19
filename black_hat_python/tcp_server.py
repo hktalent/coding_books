@@ -11,12 +11,9 @@ server.listen(5)
 print '[server]: Listening on %s:%d' % (bind_ip, bind_port)
 
 def handle_client(client_socket):
-	request = client_socket.recv(1024)
-	
-	print '[server]: Received: %s' % request
-	
-	client_socket.send('ACK')
-
+	data = client_socket.recv(4096)
+	print data
+	client_socket.send('ACK')	
 	client_socket.close()
 
 while True:
